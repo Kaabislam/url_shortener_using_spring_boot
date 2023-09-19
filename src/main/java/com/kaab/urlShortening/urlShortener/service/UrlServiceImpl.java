@@ -1,5 +1,6 @@
 package com.kaab.urlShortening.urlShortener.service;
 
+import com.google.common.hash.Hashing;
 import com.kaab.urlShortening.urlShortener.model.Url;
 import com.kaab.urlShortening.urlShortener.model.UrlDto;
 import com.kaab.urlShortening.urlShortener.repository.UrlRepository;
@@ -37,22 +38,14 @@ public class UrlServiceImpl implements UrlService{
 
         return creationDate.plusSeconds(120);
     }
-    private static String bytesToHex(byte[] hash) {
-        StringBuilder hexString = new StringBuilder(2 * hash.length);
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
+
     private String encodeUrl(String url) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(
-                url.getBytes(StandardCharsets.UTF_8));
-        return bytesToHex(encodedhash);
+        String encodeUrl = "";
+        LocalDateTime time = LocalDateTime.now();
+        encodeUrl = Hashing.murmur3_32()
+                .hashString(url.concat(time.toString()),StandardCharsets.UTF_8)
+                .toString();
+        return encodeUrl;
     }
 
     @Override
