@@ -13,6 +13,10 @@ public class UrlResponseDto {
         this.expirationDate = expirationDate;
     }
 
+    public UrlResponseDto() {
+
+    }
+
     public String getOriginalUrl() {
         return originalUrl;
     }
